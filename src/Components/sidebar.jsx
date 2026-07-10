@@ -1,5 +1,13 @@
 import NavItem from "./NavItem.jsx";
-import { HomeIcon, KanbanIcon, TimelineIcon, CollabIcon } from "./Icons.jsx";
+import {
+  HomeIcon,
+  KanbanIcon,
+  TimelineIcon,
+  CollabIcon,
+  LogoutIcon,
+} from "./icons.jsx";
+import Logo from "./Logo.jsx";
+import { useAuth } from "../auth/AuthContext.jsx";
 
 const NAV_ITEMS = [
   { key: "home", label: "Home", icon: <HomeIcon /> },
@@ -8,10 +16,12 @@ const NAV_ITEMS = [
   { key: "collab", label: "Collaborators", icon: <CollabIcon /> },
 ];
 
-export default function Sidebar({ view, setView, userName }) {
+export default function Sidebar({ view, setView }) {
+  const { user, logout } = useAuth();
+
   return (
     <div className="sidebar">
-      <div className="logo">Optim</div>
+      <Logo />
       <div className="nav">
         {NAV_ITEMS.map((item) => (
           <NavItem
@@ -24,8 +34,23 @@ export default function Sidebar({ view, setView, userName }) {
         ))}
       </div>
       <div className="user">
-        <div className="avatar" />
-        {userName}
+        {user?.picture ? (
+          <img
+            className="avatar"
+            src={user.picture}
+            alt={user.name}
+            referrerPolicy="no-referrer"
+          />
+        ) : (
+          <div className="avatar" />
+        )}
+        <div className="user-info">
+          <span className="user-name">{user?.name ?? "Guest"}</span>
+          {user?.email && <span className="user-email">{user.email}</span>}
+        </div>
+        <button className="logout-btn" onClick={logout} aria-label="Log out">
+          <LogoutIcon />
+        </button>
       </div>
     </div>
   );

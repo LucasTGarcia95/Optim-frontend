@@ -6,6 +6,7 @@ import Home from "./tabs/home.jsx";
 import Kanban from "./tabs/Kanban.jsx";
 import Timeline from "./tabs/Timeline.jsx";
 import Collaborators from "./tabs/Collaborators.jsx";
+import { useAuth } from "./auth/AuthContext.jsx";
 
 const INITIAL_BOARDS = [
   {
@@ -45,10 +46,14 @@ const VIEWS = {
 };
 
 export default function App() {
-  const [screen, setScreen] = useState("landing");
   const [view, setView] = useState("home");
   const [boards, setBoards] = useState(INITIAL_BOARDS);
   const [modalOpen, setModalOpen] = useState(false);
+  const { user } = useAuth();
+
+  if (!user) {
+    return <LandingPage />;
+  }
 
   const handleCreateBoard = (name) => {
     setBoards((prev) => [
@@ -68,15 +73,11 @@ export default function App() {
 
   const handleSelectBoard = () => setView("kanban");
 
-  if (screen === "landing") {
-    return <LandingPage onLogin={() => setScreen("dashboard")} />;
-  }
-
   const ActiveView = VIEWS[view];
 
   return (
     <div className="app">
-      <Sidebar view={view} setView={setView} userName="Chip Skylark" />
+      <Sidebar view={view} setView={setView} />
       <div className="main">
         {view === "home" ? (
           <Home

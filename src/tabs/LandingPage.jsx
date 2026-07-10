@@ -8,6 +8,9 @@ import {
   ChevronDownIcon,
 } from "../Components/icons.jsx";
 
+import Logo from "../Components/Logo.jsx";
+import { useAuth } from "../auth/AuthContext.jsx";
+
 const NAV_LINKS = ["Product", "Solutions", "Resources"];
 
 const LOGOS = [
@@ -133,7 +136,8 @@ const FOOTER_COLUMNS = [
   },
 ];
 
-export default function LandingPage({ onLogin }) {
+export default function LandingPage() {
+  const { login } = useAuth();
   const [activeTab, setActiveTab] = useState(SHOWCASE_TABS[0].key);
   const activeShowcase = SHOWCASE_TABS.find((tab) => tab.key === activeTab);
 
@@ -141,7 +145,7 @@ export default function LandingPage({ onLogin }) {
     <div className="landing">
       <div className="landing-inner">
         <nav className="landing-nav">
-          <div className="landing-logo">Optim</div>
+          <Logo badge />
           <div className="landing-links">
             {NAV_LINKS.map((link) => (
               <span key={link} className="landing-link">
@@ -150,10 +154,10 @@ export default function LandingPage({ onLogin }) {
             ))}
           </div>
           <div className="landing-nav-actions">
-            <button className="btn-ghost pill" onClick={onLogin}>
+            <button className="btn-ghost pill" onClick={login}>
               Log in
             </button>
-            <button className="btn-primary pill" onClick={onLogin}>
+            <button className="btn-primary pill" onClick={login}>
               Get started
             </button>
           </div>
@@ -166,10 +170,10 @@ export default function LandingPage({ onLogin }) {
             view, so nothing gets lost between chats.
           </p>
           <div className="landing-hero-actions">
-            <button className="btn-primary pill" onClick={onLogin}>
+            <button className="btn-primary pill" onClick={login}>
               Get started
             </button>
-            <button className="btn-ghost pill" onClick={onLogin}>
+            <button className="btn-ghost pill" onClick={login}>
               See how it works
             </button>
           </div>
@@ -221,12 +225,20 @@ export default function LandingPage({ onLogin }) {
             Optim cut our status-meeting time in half. Everyone already knows
             where things stand.
           </p>
+
           <span>Lincoln, Head of Devs in Philadelphia</span>
         </section>
 
         <section className="landing-cta">
           <h2>Bring your team into Optim</h2>
-          <button className="btn-primary pill" onClick={onLogin}>
+          <button
+            className="btn-primary pill"
+            onClick={() => {
+              console.log("clicked, login is", typeof login);
+              const result = login();
+              console.log("login() returned", result);
+            }}
+          >
             Get started
           </button>
         </section>

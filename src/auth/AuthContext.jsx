@@ -1,49 +1,49 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { useGoogleLogin } from "@react-oauth/google";
 
-const API = import.meta.env.VITE_API;
-
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(sessionStorage.getItem("token"));
+  const [user, setUser] = useState(() => {
+    const saved = localStorage.getItem("optim_user");
+    return saved ? JSON.parse(saved) : null;
+  });
 
   useEffect(() => {
-    if (token) sessionStorage.setItem("token", token);
-  }, [token]);
+    if (user) localStorage.setItem("optim_user", JSON.stringify(user));
+    else localStorage.removeItem("optim_user");
+  }, [user]);
 
-  const register = async (credentials) => {
-    const response = await fetch(API + "/users/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(credentials),
-    });
-    const result = await response.text();
-    if (!response.ok) throw Error(result);
-    setToken(result);
-  };
+  const login = useGoogleLogin({
+    scope: "openid email profile",
+    onSuccess: async (tokenResponse) => {
+      try {
+        const res = await fetch(
+          "https://www.googleapis.com/oauth2/v3/userinfo",
+          {
+            headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+          },
+        );
+        const profile = await res.json();
+        setUser({
+          name: profile.name,
+          email: profile.email,
+          picture: profile.picture,
+        });
+      } catch (err) {
+        console.error("Failed to load Google profile", err);
+      }
+    },
+    onError: (err) => console.error("Google login failed", err),
+  });
 
-  const login = async (credentials) => {
-    const response = await fetch(API + "/users/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(credentials),
-    });
-    const result = await response.text();
-    if (!response.ok) throw Error(result);
-    setToken(result);
-  };
+  const logout = () => setUser(null);
 
-  const logout = () => {
-    setToken(null);
-    sessionStorage.removeItem("token");
-  };
-
-  const value = { token, register, login, logout };
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) throw Error("useAuth must be used within an AuthProvider");
-  return context;
-}
+export const useAuth = () => useContext(AuthContext);
