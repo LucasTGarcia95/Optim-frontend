@@ -1,4 +1,5 @@
 import { NavLink } from "react-router";
+import WorkspaceSwitcher from "../components/WorkspaceSwitcher.jsx";
 
 import { useAuth } from "../auth/AuthContext";
 
@@ -9,6 +10,7 @@ export default function Navbar() {
       <NavLink id="brand" to="/">
         <p>Frontend Template</p>
       </NavLink>
+      <WorkspaceSwitcher />
       <nav>
         {token ? (
           <button onClick={logout}>Log out</button>
