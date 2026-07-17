@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getWorkspace, getMembers } from "../api/api.js";
 import { useAuth } from "../auth/AuthContext.jsx";
-import MembersTab from "../Components/MembersTab.jsx";
+import MembersTab from "./MembersTab.jsx";
 
 export default function WorkspaceSettings() {
   const { id } = useParams();

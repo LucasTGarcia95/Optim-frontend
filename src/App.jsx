@@ -2,12 +2,13 @@ import { useState } from "react";
 import Sidebar from "./Components/sidebar.jsx";
 import NewBoardModal from "./Components/NewBoardModal.jsx";
 import LandingPage from "./tabs/LandingPage.jsx";
-import Home from "./tabs/home.jsx";
+import Home from "./tabs/Home.jsx";
 import Kanban from "./tabs/Kanban.jsx";
 import Timeline from "./tabs/Timeline.jsx";
 import Collaborators from "./tabs/Collaborators.jsx";
 import { useAuth } from "./auth/AuthContext.jsx";
 import LoginPage from "./tabs/LoginPage.jsx";
+import WorkSpace from "./tabs/WorkSpace.jsx";
 
 const INITIAL_BOARDS = [
   {
@@ -44,6 +45,7 @@ const VIEWS = {
   kanban: Kanban,
   timeline: Timeline,
   collab: Collaborators,
+  workspace: WorkSpace,
 };
 
 export default function App() {

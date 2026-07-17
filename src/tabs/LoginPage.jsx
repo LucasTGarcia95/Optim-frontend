@@ -5,7 +5,7 @@ import { useAuth } from "../auth/AuthContext.jsx";
 
 export default function LoginPage({ onBack }) {
   const { login, register, loginWithGoogle } = useAuth();
-  const [mode, setMode] = useState("login"); // "login" | "register"
+  const [mode, setMode] = useState("login");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
