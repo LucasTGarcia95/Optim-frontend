@@ -14,6 +14,7 @@ import {
   getProjects,
   createProject,
   createWorkspace,
+  deleteProject,
 } from "./api/api.js";
 
 const VIEWS = {
@@ -139,6 +140,15 @@ export default function App() {
     }
   };
 
+  const handleDeleteBoard = async (projectId) => {
+    try {
+      await deleteProject(projectId, token);
+      setBoards((prev) => prev.filter((b) => b.id !== projectId));
+    } catch (err) {
+      setBoardsError(err.message);
+    }
+  };
+
   return (
     <div className="app">
       <Sidebar view={view} setView={setView} />
@@ -184,6 +194,7 @@ export default function App() {
                   setCreateError("");
                   setModalOpen(true);
                 }}
+                onDeleteBoard={handleDeleteBoard}
               />
             </>
           )

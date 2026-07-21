@@ -20,20 +20,20 @@ async function request(path, { token, method = "GET", body } = {}) {
 }
 
 export const getWorkspace = (workspaceId, token) =>
-  request(`/api/workspaces/${workspaceId}`, { token });
+  request(`/workspaces/${workspaceId}`, { token });
 
 export const getMembers = (workspaceId, token) =>
-  request(`/api/workspaces/${workspaceId}/members`, { token });
+  request(`/workspaces/${workspaceId}/members`, { token });
 
 export const inviteMember = (workspaceId, email, token) =>
-  request(`/api/workspaces/${workspaceId}/invite`, {
+  request(`/workspaces/${workspaceId}/invite`, {
     token,
     method: "POST",
     body: { email },
   });
 
 export const removeMember = (workspaceId, userId, token) =>
-  request(`/api/workspaces/${workspaceId}/members/${userId}`, {
+  request(`/workspaces/${workspaceId}/members/${userId}`, {
     token,
     method: "DELETE",
   });
@@ -86,3 +86,6 @@ export const createProject = (body, token) =>
 
 export const createWorkspace = (name, token) =>
   request(`/workspaces`, { token, method: "POST", body: { name } });
+
+export const deleteProject = (projectId, token) =>
+  request(`/projects/${projectId}`, { token, method: "DELETE" });

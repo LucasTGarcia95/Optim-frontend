@@ -1,6 +1,11 @@
 import BoardCard, { NewBoardCard } from "../components/BoardCard.jsx";
 
-export default function Home({ boards, onSelectBoard, onNewBoard }) {
+export default function Home({
+  boards,
+  onSelectBoard,
+  onNewBoard,
+  onDeleteBoard,
+}) {
   return (
     <div>
       <div className="main-header">
@@ -15,6 +20,7 @@ export default function Home({ boards, onSelectBoard, onNewBoard }) {
             key={board.id}
             board={board}
             onClick={() => onSelectBoard(board)}
+            onDelete={onDeleteBoard}
           />
         ))}
         <NewBoardCard onClick={onNewBoard} />
