@@ -3,12 +3,12 @@ import Sidebar from "./Components/sidebar.jsx";
 import NewBoardModal from "./Components/NewBoardModal.jsx";
 import LandingPage from "./tabs/LandingPage.jsx";
 import Home from "./tabs/Home.jsx";
-import Kanban from "./tabs/Kanban.jsx";
 import Timeline from "./tabs/Timeline.jsx";
 import Collaborators from "./tabs/Collaborators.jsx";
 import { useAuth } from "./auth/AuthContext.jsx";
 import LoginPage from "./tabs/LoginPage.jsx";
 import WorkSpace from "./tabs/WorkSpace.jsx";
+import Kanban from "./tabs/Kanban.jsx";
 import {
   getWorkspaces,
   getProjects,
@@ -91,14 +91,17 @@ export default function App() {
     );
   }
 
-  const handleCreateBoard = async (name) => {
+  const handleCreateBoard = async ({ name, status, startDate, endDate }) => {
     setCreateError("");
     if (!workspaceId) {
       setCreateError("No workspace found yet!");
       return;
     }
     try {
-      const { project } = await createProject({ workspaceId, name }, token);
+      const { project } = await createProject(
+        { workspaceId, name, status, startDate, endDate },
+        token,
+      );
       setBoards((prev) => [
         ...prev,
         {
@@ -200,6 +203,10 @@ export default function App() {
           )
         ) : view === "kanban" ? (
           <Kanban projectId={selectedProjectId} />
+        ) : view === "timeline" ? (
+          <Timeline workspaceId={workspaceId} />
+        ) : view === "collab" ? (
+          <Collaborators workspaceId={workspaceId} />
         ) : (
           <ActiveView />
         )}

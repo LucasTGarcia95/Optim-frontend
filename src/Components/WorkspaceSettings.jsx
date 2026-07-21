@@ -2,24 +2,24 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getWorkspace, getMembers } from "../api/api.js";
 import { useAuth } from "../auth/AuthContext.jsx";
-import MembersTab from "./MembersTab.jsx";
+import MembersTab from "../Components/MembersTab.jsx";
 
 export default function WorkspaceSettings() {
   const { id } = useParams();
-  const { user, accessToken } = useAuth();
+  const { user, token } = useAuth();
   const [workspace, setWorkspace] = useState(null);
   const [members, setMembers] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!accessToken) return;
+    if (!token) return;
 
     let cancelled = false;
     setLoading(true);
     setError("");
 
-    Promise.all([getWorkspace(id, accessToken), getMembers(id, accessToken)])
+    Promise.all([getWorkspace(id, token), getMembers(id, token)])
       .then(([workspaceRes, membersRes]) => {
         if (cancelled) return;
         setWorkspace(workspaceRes.workspace);
@@ -35,7 +35,7 @@ export default function WorkspaceSettings() {
     return () => {
       cancelled = true;
     };
-  }, [id, accessToken]);
+  }, [id, token]);
 
   if (!user) {
     return (

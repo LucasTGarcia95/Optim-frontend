@@ -4,8 +4,9 @@ import {
   getProjectBoard,
   getColumns,
   getTasks,
-  createTask,
   updateTask,
+  createTask,
+  moveTask,
   createColumn,
   renameColumn,
   reorderColumns,
@@ -76,13 +77,13 @@ export default function Kanban({ projectId }) {
   const tasksForColumn = (colId) => tasks.filter((t) => t.column_id === colId);
   const unassigned = tasks.filter((t) => t.column_id == null);
 
-  const moveTask = async (taskId, columnId) => {
+  const moveTaskOnBoard = async (taskId, columnId) => {
     const prev = tasks;
     setTasks((ts) =>
       ts.map((t) => (t.id === taskId ? { ...t, column_id: columnId } : t)),
     );
     try {
-      await updateTask(taskId, { column_id: columnId }, token);
+      await moveTask(taskId, columnId, token);
     } catch (err) {
       setTasks(prev);
       setError(err.message);
@@ -92,7 +93,7 @@ export default function Kanban({ projectId }) {
   const handleDrop = (e, colId) => {
     e.preventDefault();
     const taskId = Number(e.dataTransfer.getData("text/task-id"));
-    if (taskId) moveTask(taskId, colId);
+    if (taskId) moveTaskOnBoard(taskId, colId);
   };
 
   const handleAddColumn = async () => {
@@ -154,11 +155,10 @@ export default function Kanban({ projectId }) {
     if (!newTaskTitle.trim()) return;
     try {
       const { task } = await createTask(
+        projectId,
         {
-          project_id: projectId,
-          column_id: colId,
+          columnId: colId,
           title: newTaskTitle.trim(),
-          status: "todo",
           priority: newTaskPriority,
         },
         token,

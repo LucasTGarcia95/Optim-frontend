@@ -45,10 +45,17 @@ export const getColumns = (boardId, token) =>
   request(`/boards/${boardId}/columns`, { token });
 
 export const getTasks = (projectId, token) =>
-  request(`/tasks?project_id=${projectId}`, { token });
+  request(`/projects/${projectId}/tasks`, { token });
 
-export const createTask = (body, token) =>
-  request(`/tasks`, { token, method: "POST", body });
+export const createTask = (projectId, body, token) =>
+  request(`/projects/${projectId}/tasks`, { token, method: "POST", body });
+
+export const moveTask = (taskId, columnId, token) =>
+  request(`/tasks/${taskId}/move`, {
+    token,
+    method: "PATCH",
+    body: { columnId },
+  });
 
 export const updateTask = (taskId, body, token) =>
   request(`/tasks/${taskId}`, { token, method: "PATCH", body });
