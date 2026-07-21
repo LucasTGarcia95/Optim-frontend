@@ -4,12 +4,15 @@ import {
   getProjectBoard,
   getColumns,
   getTasks,
+  createTask,
   updateTask,
   createColumn,
   renameColumn,
   reorderColumns,
   deleteColumn,
 } from "../api/api.js";
+
+const PRIORITIES = ["low", "medium", "high", "urgent"];
 
 export default function Kanban({ projectId }) {
   const { token } = useAuth();
@@ -22,6 +25,9 @@ export default function Kanban({ projectId }) {
   const [newColName, setNewColName] = useState("");
   const [editingColId, setEditingColId] = useState(null);
   const [editingColName, setEditingColName] = useState("");
+  const [addingTaskCol, setAddingTaskCol] = useState(null);
+  const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [newTaskPriority, setNewTaskPriority] = useState("medium");
 
   const load = useCallback(() => {
     if (!projectId || !token) return;
@@ -144,6 +150,28 @@ export default function Kanban({ projectId }) {
     }
   };
 
+  const handleAddTask = async (colId) => {
+    if (!newTaskTitle.trim()) return;
+    try {
+      const { task } = await createTask(
+        {
+          project_id: projectId,
+          column_id: colId,
+          title: newTaskTitle.trim(),
+          status: "todo",
+          priority: newTaskPriority,
+        },
+        token,
+      );
+      setTasks((ts) => [...ts, task]);
+      setNewTaskTitle("");
+      setNewTaskPriority("medium");
+      setAddingTaskCol(null);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   return (
     <div>
       <div className="main-header">
@@ -198,6 +226,7 @@ export default function Kanban({ projectId }) {
                 </button>
               </div>
             </div>
+
             {tasksForColumn(col.id).map((task) => (
               <div
                 className="ktask"
@@ -211,6 +240,52 @@ export default function Kanban({ projectId }) {
                 {task.title}
               </div>
             ))}
+
+            {addingTaskCol === col.id ? (
+              <div className="ktask-new">
+                <input
+                  autoFocus
+                  placeholder="Task title"
+                  value={newTaskTitle}
+                  onChange={(e) => setNewTaskTitle(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleAddTask(col.id)}
+                />
+                <select
+                  value={newTaskPriority}
+                  onChange={(e) => setNewTaskPriority(e.target.value)}
+                >
+                  {PRIORITIES.map((p) => (
+                    <option key={p} value={p}>
+                      {p}
+                    </option>
+                  ))}
+                </select>
+                <div className="modal-actions">
+                  <button
+                    className="btn-secondary"
+                    onClick={() => {
+                      setAddingTaskCol(null);
+                      setNewTaskTitle("");
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="btn-primary"
+                    onClick={() => handleAddTask(col.id)}
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                className="add-task-btn"
+                onClick={() => setAddingTaskCol(col.id)}
+              >
+                + Add task
+              </button>
+            )}
           </div>
         ))}
 
