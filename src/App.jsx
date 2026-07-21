@@ -54,6 +54,7 @@ export default function App() {
   const [modalOpen, setModalOpen] = useState(false);
   const { user } = useAuth();
   const [screen, setScreen] = useState("landing");
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
 
   if (!user) {
     return screen === "login" ? (
@@ -79,7 +80,10 @@ export default function App() {
     setModalOpen(false);
   };
 
-  const handleSelectBoard = () => setView("kanban");
+  const handleSelectBoard = (board) => {
+    setSelectedProjectId(board.id);
+    setView("kanban");
+  };
 
   const ActiveView = VIEWS[view];
 
@@ -93,6 +97,8 @@ export default function App() {
             onSelectBoard={handleSelectBoard}
             onNewBoard={() => setModalOpen(true)}
           />
+        ) : view === "kanban" ? (
+          <Kanban projectId={selectedProjectId} />
         ) : (
           <ActiveView />
         )}

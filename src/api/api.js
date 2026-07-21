@@ -37,3 +37,41 @@ export const removeMember = (workspaceId, userId, token) =>
     token,
     method: "DELETE",
   });
+
+export const getProjectBoard = (projectId, token) =>
+  request(`/projects/${projectId}/board`, { token });
+
+export const getColumns = (boardId, token) =>
+  request(`/boards/${boardId}/columns`, { token });
+
+export const getTasks = (projectId, token) =>
+  request(`/tasks?project_id=${projectId}`, { token });
+
+export const createTask = (body, token) =>
+  request(`/tasks`, { token, method: "POST", body });
+
+export const updateTask = (taskId, body, token) =>
+  request(`/tasks/${taskId}`, { token, method: "PATCH", body });
+
+export const deleteTask = (taskId, token) =>
+  request(`/tasks/${taskId}`, { token, method: "DELETE" });
+
+export const createColumn = (boardId, name, token) =>
+  request(`/boards/${boardId}/columns`, {
+    token,
+    method: "POST",
+    body: { name },
+  });
+
+export const renameColumn = (columnId, name, token) =>
+  request(`/columns/${columnId}`, { token, method: "PATCH", body: { name } });
+
+export const reorderColumns = (boardId, orderedColumnIds, token) =>
+  request(`/boards/${boardId}/columns/reorder`, {
+    token,
+    method: "PATCH",
+    body: { orderedColumnIds },
+  });
+
+export const deleteColumn = (columnId, token) =>
+  request(`/columns/${columnId}`, { token, method: "DELETE" });
