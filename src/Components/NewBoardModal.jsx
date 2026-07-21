@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export default function NewBoardModal({ open, onClose, onCreate }) {
+export default function NewBoardModal({ open, onClose, onCreate, error }) {
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -35,6 +35,7 @@ export default function NewBoardModal({ open, onClose, onCreate }) {
             if (e.key === "Enter") handleCreate();
           }}
         />
+        {error && <p className="modal-error">{error}</p>}
         <div className="modal-actions">
           <button className="btn-secondary" onClick={onClose}>
             Cancel

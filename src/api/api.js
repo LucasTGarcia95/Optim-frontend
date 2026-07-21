@@ -75,3 +75,14 @@ export const reorderColumns = (boardId, orderedColumnIds, token) =>
 
 export const deleteColumn = (columnId, token) =>
   request(`/columns/${columnId}`, { token, method: "DELETE" });
+
+export const getWorkspaces = (token) => request(`/workspaces`, { token });
+
+export const getProjects = (workspaceId, token) =>
+  request(`/projects?workspace_id=${workspaceId}`, { token });
+
+export const createProject = (body, token) =>
+  request(`/projects`, { token, method: "POST", body });
+
+export const createWorkspace = (name, token) =>
+  request(`/workspaces`, { token, method: "POST", body: { name } });
