@@ -1,10 +1,10 @@
 import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "../auth/AuthContext.jsx";
+import TaskDetailsModal from "../Components/TaskDetailModal.jsx";
 import {
   getProjectBoard,
   getColumns,
   getTasks,
-  updateTask,
   createTask,
   moveTask,
   createColumn,
@@ -17,23 +17,31 @@ const PRIORITIES = ["low", "medium", "high", "urgent"];
 
 export default function Kanban({ projectId }) {
   const { token } = useAuth();
+
   const [board, setBoard] = useState(null);
   const [columns, setColumns] = useState([]);
   const [tasks, setTasks] = useState([]);
+  const [selectedTask, setSelectedTask] = useState(null);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
   const [addingCol, setAddingCol] = useState(false);
   const [newColName, setNewColName] = useState("");
+
   const [editingColId, setEditingColId] = useState(null);
   const [editingColName, setEditingColName] = useState("");
+
   const [addingTaskCol, setAddingTaskCol] = useState(null);
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskPriority, setNewTaskPriority] = useState("medium");
 
   const load = useCallback(() => {
     if (!projectId || !token) return;
+
     setLoading(true);
     setError("");
+
     getProjectBoard(projectId, token)
       .then(({ board }) =>
         Promise.all([
@@ -42,10 +50,10 @@ export default function Kanban({ projectId }) {
           getTasks(projectId, token),
         ]),
       )
-      .then(([board, colsRes, tasksRes]) => {
-        setBoard(board);
-        setColumns(colsRes.columns);
-        setTasks(tasksRes.tasks);
+      .then(([loadedBoard, columnsResponse, tasksResponse]) => {
+        setBoard(loadedBoard);
+        setColumns(columnsResponse.columns);
+        setTasks(tasksResponse.tasks);
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
@@ -55,52 +63,70 @@ export default function Kanban({ projectId }) {
     load();
   }, [load]);
 
-  if (!projectId) {
-    return (
-      <div>
-        <div className="main-header">
-          <h1>Kanban board</h1>
-        </div>
-        <p className="settings-message">
-          Select a project from Home to see its board.
-        </p>
-      </div>
-    );
-  }
-  if (loading)
-    return (
-      <div className="main-header">
-        <h1>Kanban board</h1>
-      </div>
-    );
+  const tasksForColumn = (columnId) =>
+    tasks.filter((task) => task.column_id === columnId);
 
-  const tasksForColumn = (colId) => tasks.filter((t) => t.column_id === colId);
-  const unassigned = tasks.filter((t) => t.column_id == null);
+  const unassigned = tasks.filter((task) => task.column_id == null);
 
   const moveTaskOnBoard = async (taskId, columnId) => {
-    const prev = tasks;
-    setTasks((ts) =>
-      ts.map((t) => (t.id === taskId ? { ...t, column_id: columnId } : t)),
+    const previousTasks = tasks;
+
+    setTasks((currentTasks) =>
+      currentTasks.map((task) =>
+        task.id === taskId
+          ? {
+              ...task,
+              column_id: columnId,
+            }
+          : task,
+      ),
     );
+
     try {
-      await moveTask(taskId, columnId, token);
+      const { task: updatedTask } = await moveTask(taskId, columnId, token);
+
+      setTasks((currentTasks) =>
+        currentTasks.map((task) =>
+          task.id === updatedTask.id ? updatedTask : task,
+        ),
+      );
+
+      setSelectedTask((currentTask) =>
+        currentTask?.id === updatedTask.id ? updatedTask : currentTask,
+      );
     } catch (err) {
-      setTasks(prev);
+      setTasks(previousTasks);
       setError(err.message);
     }
   };
 
-  const handleDrop = (e, colId) => {
-    e.preventDefault();
-    const taskId = Number(e.dataTransfer.getData("text/task-id"));
-    if (taskId) moveTaskOnBoard(taskId, colId);
+  const handleDrop = (event, columnId) => {
+    event.preventDefault();
+
+    const taskId = Number(
+      event.dataTransfer.getData("text/task-id"),
+    );
+
+    if (taskId) {
+      moveTaskOnBoard(taskId, columnId);
+    }
   };
 
   const handleAddColumn = async () => {
     if (!newColName.trim()) return;
+
     try {
-      const { column } = await createColumn(board.id, newColName.trim(), token);
-      setColumns((cs) => [...cs, column]);
+      const { column } = await createColumn(
+        board.id,
+        newColName.trim(),
+        token,
+      );
+
+      setColumns((currentColumns) => [
+        ...currentColumns,
+        column,
+      ]);
+
       setNewColName("");
       setAddingCol(false);
     } catch (err) {
@@ -108,15 +134,26 @@ export default function Kanban({ projectId }) {
     }
   };
 
-  const handleRenameColumn = async (colId) => {
-    if (!editingColName.trim()) return setEditingColId(null);
+  const handleRenameColumn = async (columnId) => {
+    if (!editingColName.trim()) {
+      setEditingColId(null);
+      return;
+    }
+
     try {
       const { column } = await renameColumn(
-        colId,
+        columnId,
         editingColName.trim(),
         token,
       );
-      setColumns((cs) => cs.map((c) => (c.id === colId ? column : c)));
+
+      setColumns((currentColumns) =>
+        currentColumns.map((currentColumn) =>
+          currentColumn.id === columnId
+            ? column
+            : currentColumn,
+        ),
+      );
     } catch (err) {
       setError(err.message);
     } finally {
@@ -124,25 +161,53 @@ export default function Kanban({ projectId }) {
     }
   };
 
-  const handleDeleteColumn = async (colId) => {
+  const handleDeleteColumn = async (columnId) => {
     try {
-      await deleteColumn(colId, token);
-      setColumns((cs) => cs.filter((c) => c.id !== colId));
+      await deleteColumn(columnId, token);
+
+      setColumns((currentColumns) =>
+        currentColumns.filter(
+          (column) => column.id !== columnId,
+        ),
+      );
+
+      setTasks((currentTasks) =>
+        currentTasks.map((task) =>
+          task.column_id === columnId
+            ? {
+                ...task,
+                column_id: null,
+              }
+            : task,
+        ),
+      );
     } catch (err) {
       setError(err.message);
     }
   };
 
   const moveColumn = async (index, direction) => {
-    const next = [...columns];
-    const swapWith = index + direction;
-    if (swapWith < 0 || swapWith >= next.length) return;
-    [next[index], next[swapWith]] = [next[swapWith], next[index]];
-    setColumns(next);
+    const nextColumns = [...columns];
+    const swapIndex = index + direction;
+
+    if (
+      swapIndex < 0 ||
+      swapIndex >= nextColumns.length
+    ) {
+      return;
+    }
+
+    [nextColumns[index], nextColumns[swapIndex]] = [
+      nextColumns[swapIndex],
+      nextColumns[index],
+    ];
+
+    setColumns(nextColumns);
+
     try {
       await reorderColumns(
         board.id,
-        next.map((c) => c.id),
+        nextColumns.map((column) => column.id),
         token,
       );
     } catch (err) {
@@ -151,19 +216,25 @@ export default function Kanban({ projectId }) {
     }
   };
 
-  const handleAddTask = async (colId) => {
+  const handleAddTask = async (columnId) => {
     if (!newTaskTitle.trim()) return;
+
     try {
       const { task } = await createTask(
         projectId,
         {
-          columnId: colId,
+          columnId,
           title: newTaskTitle.trim(),
           priority: newTaskPriority,
         },
         token,
       );
-      setTasks((ts) => [...ts, task]);
+
+      setTasks((currentTasks) => [
+        ...currentTasks,
+        task,
+      ]);
+
       setNewTaskTitle("");
       setNewTaskPriority("medium");
       setAddingTaskCol(null);
@@ -172,107 +243,215 @@ export default function Kanban({ projectId }) {
     }
   };
 
+  const handleTaskUpdated = (updatedTask) => {
+    setTasks((currentTasks) =>
+      currentTasks.map((task) =>
+        task.id === updatedTask.id
+          ? updatedTask
+          : task,
+      ),
+    );
+
+    setSelectedTask(updatedTask);
+  };
+
+  const handleTaskDragStart = (event, taskId) => {
+    event.dataTransfer.setData(
+      "text/task-id",
+      String(taskId),
+    );
+  };
+
+  if (!projectId) {
+    return (
+      <div>
+        <div className="main-header">
+          <h1>Kanban board</h1>
+        </div>
+
+        <p className="settings-message">
+          Select a project from Home to see its board.
+        </p>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="main-header">
+        <h1>Kanban board</h1>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="main-header">
         <h1>{board?.name ?? "Kanban board"}</h1>
-        <button className="btn-primary" onClick={() => setAddingCol(true)}>
+
+        <button
+          className="btn-primary"
+          onClick={() => setAddingCol(true)}
+        >
           + New column
         </button>
       </div>
-      {error && <p className="settings-error">{error}</p>}
+
+      {error && (
+        <p className="settings-error">{error}</p>
+      )}
 
       <div className="kanban">
-        {columns.map((col, i) => (
+        {columns.map((column, index) => (
           <div
             className="kcol"
-            key={col.id}
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => handleDrop(e, col.id)}
+            key={column.id}
+            onDragOver={(event) =>
+              event.preventDefault()
+            }
+            onDrop={(event) =>
+              handleDrop(event, column.id)
+            }
           >
             <div className="kcol-header">
-              {editingColId === col.id ? (
+              {editingColId === column.id ? (
                 <input
                   autoFocus
                   value={editingColName}
-                  onChange={(e) => setEditingColName(e.target.value)}
-                  onBlur={() => handleRenameColumn(col.id)}
-                  onKeyDown={(e) =>
-                    e.key === "Enter" && handleRenameColumn(col.id)
+                  onChange={(event) =>
+                    setEditingColName(
+                      event.target.value,
+                    )
                   }
+                  onBlur={() =>
+                    handleRenameColumn(column.id)
+                  }
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      handleRenameColumn(column.id);
+                    }
+                  }}
                 />
               ) : (
                 <h4
                   onClick={() => {
-                    setEditingColId(col.id);
-                    setEditingColName(col.name);
+                    setEditingColId(column.id);
+                    setEditingColName(column.name);
                   }}
                 >
-                  {col.name}
+                  {column.name}
                 </h4>
               )}
+
               <div className="kcol-actions">
-                <button disabled={i === 0} onClick={() => moveColumn(i, -1)}>
+                <button
+                  disabled={index === 0}
+                  onClick={() =>
+                    moveColumn(index, -1)
+                  }
+                >
                   &larr;
                 </button>
+
                 <button
-                  disabled={i === columns.length - 1}
-                  onClick={() => moveColumn(i, 1)}
+                  disabled={
+                    index === columns.length - 1
+                  }
+                  onClick={() =>
+                    moveColumn(index, 1)
+                  }
                 >
                   &rarr;
                 </button>
-                <button onClick={() => handleDeleteColumn(col.id)}>
+
+                <button
+                  onClick={() =>
+                    handleDeleteColumn(column.id)
+                  }
+                >
                   &times;
                 </button>
               </div>
             </div>
 
-            {tasksForColumn(col.id).map((task) => (
-              <div
-                className="ktask"
-                key={task.id}
-                draggable
-                onDragStart={(e) =>
-                  e.dataTransfer.setData("text/task-id", String(task.id))
-                }
-              >
-                <span className={`priority-dot priority-${task.priority}`} />
-                {task.title}
-              </div>
-            ))}
+            {tasksForColumn(column.id).map(
+              (task) => (
+                <div
+                  className="ktask"
+                  key={task.id}
+                  draggable
+                  onDragStart={(event) =>
+                    handleTaskDragStart(
+                      event,
+                      task.id,
+                    )
+                  }
+                  onClick={() =>
+                    setSelectedTask(task)
+                  }
+                >
+                  <span
+                    className={`priority-dot priority-${task.priority}`}
+                  />
 
-            {addingTaskCol === col.id ? (
+                  <span>{task.title}</span>
+                </div>
+              ),
+            )}
+
+            {addingTaskCol === column.id ? (
               <div className="ktask-new">
                 <input
                   autoFocus
                   placeholder="Task title"
                   value={newTaskTitle}
-                  onChange={(e) => setNewTaskTitle(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleAddTask(col.id)}
+                  onChange={(event) =>
+                    setNewTaskTitle(
+                      event.target.value,
+                    )
+                  }
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      handleAddTask(column.id);
+                    }
+                  }}
                 />
+
                 <select
                   value={newTaskPriority}
-                  onChange={(e) => setNewTaskPriority(e.target.value)}
+                  onChange={(event) =>
+                    setNewTaskPriority(
+                      event.target.value,
+                    )
+                  }
                 >
-                  {PRIORITIES.map((p) => (
-                    <option key={p} value={p}>
-                      {p}
+                  {PRIORITIES.map((priority) => (
+                    <option
+                      key={priority}
+                      value={priority}
+                    >
+                      {priority}
                     </option>
                   ))}
                 </select>
+
                 <div className="modal-actions">
                   <button
                     className="btn-secondary"
                     onClick={() => {
                       setAddingTaskCol(null);
                       setNewTaskTitle("");
+                      setNewTaskPriority("medium");
                     }}
                   >
                     Cancel
                   </button>
+
                   <button
                     className="btn-primary"
-                    onClick={() => handleAddTask(col.id)}
+                    onClick={() =>
+                      handleAddTask(column.id)
+                    }
                   >
                     Add
                   </button>
@@ -281,7 +460,9 @@ export default function Kanban({ projectId }) {
             ) : (
               <button
                 className="add-task-btn"
-                onClick={() => setAddingTaskCol(col.id)}
+                onClick={() =>
+                  setAddingTaskCol(column.id)
+                }
               >
                 + Add task
               </button>
@@ -295,17 +476,31 @@ export default function Kanban({ projectId }) {
               autoFocus
               placeholder="Column name"
               value={newColName}
-              onChange={(e) => setNewColName(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleAddColumn()}
+              onChange={(event) =>
+                setNewColName(event.target.value)
+              }
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  handleAddColumn();
+                }
+              }}
             />
+
             <div className="modal-actions">
               <button
                 className="btn-secondary"
-                onClick={() => setAddingCol(false)}
+                onClick={() => {
+                  setAddingCol(false);
+                  setNewColName("");
+                }}
               >
                 Cancel
               </button>
-              <button className="btn-primary" onClick={handleAddColumn}>
+
+              <button
+                className="btn-primary"
+                onClick={handleAddColumn}
+              >
                 Add
               </button>
             </div>
@@ -316,19 +511,39 @@ export default function Kanban({ projectId }) {
       {unassigned.length > 0 && (
         <div className="kanban-unassigned">
           <h4>No column</h4>
+
           {unassigned.map((task) => (
             <div
               className="ktask"
               key={task.id}
               draggable
-              onDragStart={(e) =>
-                e.dataTransfer.setData("text/task-id", String(task.id))
+              onDragStart={(event) =>
+                handleTaskDragStart(
+                  event,
+                  task.id,
+                )
+              }
+              onClick={() =>
+                setSelectedTask(task)
               }
             >
-              {task.title}
+              <span
+                className={`priority-dot priority-${task.priority}`}
+              />
+
+              <span>{task.title}</span>
             </div>
           ))}
         </div>
+      )}
+
+      {selectedTask && (
+        <TaskDetailsModal
+          task={selectedTask}
+          token={token}
+          onClose={() => setSelectedTask(null)}
+          onTaskUpdated={handleTaskUpdated}
+        />
       )}
     </div>
   );

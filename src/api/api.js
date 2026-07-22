@@ -48,7 +48,11 @@ export const getTasks = (projectId, token) =>
   request(`/projects/${projectId}/tasks`, { token });
 
 export const createTask = (projectId, body, token) =>
-  request(`/projects/${projectId}/tasks`, { token, method: "POST", body });
+  request(`/projects/${projectId}/tasks`, {
+    token,
+    method: "POST",
+    body,
+  });
 
 export const moveTask = (taskId, columnId, token) =>
   request(`/tasks/${taskId}/move`, {
@@ -58,10 +62,17 @@ export const moveTask = (taskId, columnId, token) =>
   });
 
 export const updateTask = (taskId, body, token) =>
-  request(`/tasks/${taskId}`, { token, method: "PATCH", body });
+  request(`/tasks/${taskId}`, {
+    token,
+    method: "PATCH",
+    body,
+  });
 
 export const deleteTask = (taskId, token) =>
-  request(`/tasks/${taskId}`, { token, method: "DELETE" });
+  request(`/tasks/${taskId}`, {
+    token,
+    method: "DELETE",
+  });
 
 export const createColumn = (boardId, name, token) =>
   request(`/boards/${boardId}/columns`, {
@@ -71,7 +82,11 @@ export const createColumn = (boardId, name, token) =>
   });
 
 export const renameColumn = (columnId, name, token) =>
-  request(`/columns/${columnId}`, { token, method: "PATCH", body: { name } });
+  request(`/columns/${columnId}`, {
+    token,
+    method: "PATCH",
+    body: { name },
+  });
 
 export const reorderColumns = (boardId, orderedColumnIds, token) =>
   request(`/boards/${boardId}/columns/reorder`, {
@@ -81,18 +96,52 @@ export const reorderColumns = (boardId, orderedColumnIds, token) =>
   });
 
 export const deleteColumn = (columnId, token) =>
-  request(`/columns/${columnId}`, { token, method: "DELETE" });
+  request(`/columns/${columnId}`, {
+    token,
+    method: "DELETE",
+  });
 
-export const getWorkspaces = (token) => request(`/workspaces`, { token });
+export const getWorkspaces = (token) =>
+  request("/workspaces", { token });
 
 export const getProjects = (workspaceId, token) =>
   request(`/projects?workspace_id=${workspaceId}`, { token });
 
 export const createProject = (body, token) =>
-  request(`/projects`, { token, method: "POST", body });
+  request("/projects", {
+    token,
+    method: "POST",
+    body,
+  });
 
 export const createWorkspace = (name, token) =>
-  request(`/workspaces`, { token, method: "POST", body: { name } });
+  request("/workspaces", {
+    token,
+    method: "POST",
+    body: { name },
+  });
 
 export const deleteProject = (projectId, token) =>
-  request(`/projects/${projectId}`, { token, method: "DELETE" });
+  request(`/projects/${projectId}`, {
+    token,
+    method: "DELETE",
+  });
+
+export const getTaskComments = (taskId, token) =>
+  request(`/tasks/${taskId}/comments`, { token });
+
+export const createTaskComment = (taskId, body, token) =>
+  request(`/tasks/${taskId}/comments`, {
+    token,
+    method: "POST",
+    body: { body },
+  });
+
+export const deleteTaskComment = (commentId, token) =>
+  request(`/comments/${commentId}`, {
+    token,
+    method: "DELETE",
+  });
+
+export const getTaskActivity = (taskId, token) =>
+  request(`/tasks/${taskId}/activity`, { token });
