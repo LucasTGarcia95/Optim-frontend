@@ -5,9 +5,12 @@ import {
   TimelineIcon,
   CollabIcon,
   LogoutIcon,
+  MoonIcon,
+  SunIcon,
 } from "./icons.jsx";
 import Logo from "./Logo.jsx";
 import { useAuth } from "../auth/AuthContext.jsx";
+import { useTheme } from "../theme/ThemeContext.jsx";
 
 const NAV_ITEMS = [
   { key: "home", label: "Home", icon: <HomeIcon /> },
@@ -18,6 +21,7 @@ const NAV_ITEMS = [
 
 export default function Sidebar({ view, setView }) {
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <div className="sidebar">
@@ -48,6 +52,15 @@ export default function Sidebar({ view, setView }) {
           <span className="user-name">{user?.name ?? "Guest"}</span>
           {user?.email && <span className="user-email">{user.email}</span>}
         </div>
+        <button
+          className="logout-btn"
+          onClick={toggleTheme}
+          aria-label={
+            theme === "light" ? "Switch to dark mode" : "Switch to light mode"
+          }
+        >
+          {theme === "light" ? <MoonIcon /> : <SunIcon />}
+        </button>
         <button className="logout-btn" onClick={logout} aria-label="Log out">
           <LogoutIcon />
         </button>
