@@ -14,6 +14,7 @@
   --amber-bg: #fbe3c4;
   --amber-text: #9a6a1f;
   --on-track: #3f5e3a;
+  --cta: #504d63;
 }
 
 [data-theme="dark"] {
@@ -33,6 +34,7 @@
   --amber-bg: #4a3a24;
   --amber-text: #e0b876;
   --on-track-text: #bfe0b8;
+  --cta-text: #bfe0b8;
 }
 
 [data-theme="light"] {
@@ -284,7 +286,7 @@ body {
   justify-content: center;
   flex-direction: column;
   gap: 8px;
-  border: 2px dashed #c3cdd1;
+  border: 2px dashed var(--border);
   color: var(--muted);
   font-weight: 600;
   background: transparent;
@@ -335,6 +337,8 @@ body {
   border-radius: 8px;
   font-size: 14px;
   margin-bottom: 16px;
+  background: var(--card);
+  color: var(--text);
 }
 .modal-actions {
   display: flex;
@@ -391,7 +395,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #fff;
+  background: var(--card);
   border: 1px solid var(--border);
   border-radius: 999px;
   padding: 10px 10px 10px 22px;
@@ -448,7 +452,7 @@ body {
   transition: background 0.15s;
 }
 .btn-ghost:hover {
-  background: #ecf0f1;
+  background: var(--surface-2);
 }
 .pill {
   border-radius: 999px !important;
@@ -494,7 +498,7 @@ body {
   flex-wrap: wrap;
   font-size: 16px;
   font-weight: 600;
-  color: #bac7cc;
+  color: var(--muted);
 }
 
 .landing-features {
@@ -660,7 +664,7 @@ body {
 .landing-cta h2 {
   font-size: 28px;
   font-weight: 700;
-  color: var(--plum);
+  color: var(--cta-text);
   margin: 0 0 20px;
 }
 
@@ -753,8 +757,8 @@ body {
     border-color 0.15s;
 }
 .google-btn:hover {
-  background: #f7f6f4;
-  border-color: #c3cdd1;
+  background: var(--surface-2);
+  border-color: var(--border);
 }
 .login-back {
   display: block;
@@ -786,6 +790,8 @@ body {
   border: 1px solid var(--border);
   border-radius: 8px;
   font-size: 14px;
+  background: var(--card);
+  color: var(--text);
 }
 .login-divider {
   color: var(--muted);
