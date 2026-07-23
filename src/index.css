@@ -13,6 +13,34 @@
   --muted: #78838d;
   --amber-bg: #fbe3c4;
   --amber-text: #9a6a1f;
+  --on-track: #3f5e3a;
+}
+
+[data-theme="dark"] {
+  --dark: #3a4048;
+  --dark-hover: #454c55;
+  --green: #93c591;
+  --green-deep: #8fb87a;
+  --green-light: #2d3b2a;
+  --blue-gray: #819aa3;
+  --plum: #504d63;
+  --bg: #1e2124;
+  --card: #2a2d31;
+  --surface-2: #33373c;
+  --border: #3f4448;
+  --text: #e4e2dd;
+  --muted: #9aa0a6;
+  --amber-bg: #4a3a24;
+  --amber-text: #e0b876;
+  --on-track-text: #bfe0b8;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 * {
@@ -212,7 +240,7 @@ body {
 }
 .badge.on-track {
   background: var(--green-light);
-  color: #3f5e3a;
+  color: var(--on-track-text);
 }
 .badge.at-risk {
   background: var(--amber-bg);
@@ -291,7 +319,7 @@ body {
   display: flex;
 }
 .modal {
-  background: #fff;
+  background: var(--card);
   border-radius: 14px;
   padding: 24px;
   width: 340px;
@@ -314,7 +342,7 @@ body {
   gap: 8px;
 }
 .btn-secondary {
-  background: #eef1f2;
+  background: var(--border);
   color: var(--text);
   border: none;
   padding: 9px 16px;
@@ -330,13 +358,7 @@ body {
   overflow-x: auto;
   max-width: 100%;
 }
-.kcol {
-  background: #eceff0;
-  border-radius: 12px;
-  padding: 12px;
-  width: 230px;
-  flex-shrink: 0;
-}
+
 .kcol h4 {
   margin: 4px 6px 12px;
   font-size: 13px;
@@ -345,7 +367,7 @@ body {
   letter-spacing: 0.04em;
 }
 .ktask {
-  background: #fff;
+  background: var(--card);
   border-radius: 8px;
   padding: 10px 12px;
   margin-bottom: 8px;
@@ -934,7 +956,7 @@ body {
 ========================= */
 
 .task-modal {
-  background: #fff;
+  background: var(--card);
   width: min(800px, 95vw);
   max-height: 90vh;
   overflow-y: auto;
@@ -997,7 +1019,7 @@ body {
 
 .comment,
 .activity-item {
-  background: #f8f8f8;
+  background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 12px;
@@ -1073,7 +1095,7 @@ body {
 
 .confirm-modal {
   width: min(420px, 100%);
-  background: #fff;
+  background: var(--card);
   border-radius: 14px;
   padding: 24px;
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
@@ -1144,8 +1166,8 @@ body {
   max-width: 250px;
   min-height: 180px;
 
-  background: #ebecea;
-  border: 1px solid #dedfdd;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 12px;
 
@@ -1244,7 +1266,7 @@ body {
   min-height: 48px;
   margin-bottom: 9px;
   padding: 12px;
-  background: #fff;
+  background: var(--card);
   border: 1px solid var(--border);
   border-radius: 10px;
   color: var(--text);
@@ -1321,7 +1343,7 @@ body {
 .ktask-new {
   margin-top: 4px;
   padding: 12px;
-  background: #fff;
+  background: var(--card);
   border: 1px solid var(--border);
   border-radius: 10px;
   box-shadow: 0 5px 14px rgba(52, 49, 61, 0.07);
@@ -1334,7 +1356,7 @@ body {
   padding: 9px 10px;
   border: 1px solid var(--border);
   border-radius: 8px;
-  background: #fff;
+  background: var(--card);
   color: var(--text);
   font-family: inherit;
   font-size: 13px;

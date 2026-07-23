@@ -6,19 +6,22 @@ import { AuthProvider } from "./auth/AuthContext.jsx";
 import "./index.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import WorkspaceSettings from "./Components/WorkspaceSettings.jsx";
+import { ThemeProvider } from "./theme/ThemeContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path="workspaces/:id/settings"
-            element={<WorkspaceSettings />}
-          />
-          <Route path="/*" element={<App />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="workspaces/:id/settings"
+              element={<WorkspaceSettings />}
+            />
+            <Route path="/*" element={<App />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </ThemeProvider>
   </GoogleOAuthProvider>,
 );
