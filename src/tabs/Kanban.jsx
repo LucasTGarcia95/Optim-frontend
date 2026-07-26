@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useAuth } from "../auth/AuthContext.jsx";
-import TaskDetailsModal from "../Components/TaskDetailModal.jsx";
+import TaskDetailsModal from "../components/TaskDetailModal.jsx";
 import {
   getProjectBoard,
   getColumns,

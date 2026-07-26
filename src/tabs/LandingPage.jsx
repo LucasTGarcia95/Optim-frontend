@@ -6,11 +6,11 @@ import {
   ShieldIcon,
   QuoteIcon,
   ChevronDownIcon,
-} from "../Components/icons.jsx";
+} from "../components/icons.jsx";
 
-import Logo from "../Components/Logo.jsx";
+import Logo from "../components/Logo.jsx";
 
-import DemoTour from "../Components/DemoTour.jsx";
+import DemoTour from "../components/DemoTour.jsx";
 
 const NAV_LINKS = ["Product", "Solutions", "Resources"];
 
