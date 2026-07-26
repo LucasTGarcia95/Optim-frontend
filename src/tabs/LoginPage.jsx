@@ -48,11 +48,12 @@ export default function LoginPage({ onBack }) {
       <div className="login-card">
         <h1>Welcome to Optim</h1>
         <p>To get started, please sign in</p>
-
-        <GoogleLogin
-          onSuccess={handleGoogleSuccess}
-          onError={() => setError("Google sign-in failed")}
-        />
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => setError("Google sign-in failed")}
+          />
+        </div>
 
         <div className="login-divider">or</div>
 
