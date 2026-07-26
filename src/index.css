@@ -1424,3 +1424,7 @@ body {
     min-width: 220px;
   }
 }
+
+.landing-cta .btn-primary {
+  margin: 0 auto;
+}
