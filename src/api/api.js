@@ -147,3 +147,20 @@ export const getTaskActivity = (taskId, token) =>
 
 export const getAnalytics = (projectId, token) =>
   request(`/projects/${projectId}/analytics`, { token });
+
+export const getProjectMembers = (projectId, token) =>
+  request(`/projects/${projectId}/members`, { token });
+
+export const assignTask = (taskId, assigneeId, token) =>
+  request(`/tasks/${taskId}/assignee`, {
+    token,
+    method: "PATCH",
+    body: { assigneeId },
+  });
+
+export const addProjectMember = (projectId, email, token) =>
+  request(`/projects/${projectId}/members`, {
+    token,
+    method: "POST",
+    body: { email },
+  });

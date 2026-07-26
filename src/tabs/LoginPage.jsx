@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { GoogleLogin } from "@react-oauth/google";
-import Logo from "../Components/Logo.jsx";
+import Logo from "../components/Logo.jsx";
 import { useAuth } from "../auth/AuthContext.jsx";
 
 export default function LoginPage({ onBack }) {

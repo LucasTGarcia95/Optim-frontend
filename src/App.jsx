@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import Sidebar from "./Components/sidebar.jsx";
-import NewBoardModal from "./Components/NewBoardModal.jsx";
+import Sidebar from "./components/sidebar.jsx";
+import NewBoardModal from "./components/NewBoardModal.jsx";
 import LandingPage from "./tabs/LandingPage.jsx";
 import Home from "./tabs/Home.jsx";
 import Timeline from "./tabs/Timeline.jsx";

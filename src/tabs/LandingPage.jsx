@@ -6,9 +6,11 @@ import {
   ShieldIcon,
   QuoteIcon,
   ChevronDownIcon,
-} from "../Components/icons.jsx";
+} from "../components/icons.jsx";
 
-import Logo from "../Components/Logo.jsx";
+import Logo from "../components/Logo.jsx";
+
+import DemoTour from "../components/DemoTour.jsx";
 
 const NAV_LINKS = ["Product", "Solutions", "Resources"];
 
@@ -137,6 +139,7 @@ const FOOTER_COLUMNS = [
 
 export default function LandingPage({ onGetStarted }) {
   const [activeTab, setActiveTab] = useState(SHOWCASE_TABS[0].key);
+  const [showDemo, setShowDemo] = useState(false);
   const activeShowcase = SHOWCASE_TABS.find((tab) => tab.key === activeTab);
 
   return (
@@ -171,7 +174,10 @@ export default function LandingPage({ onGetStarted }) {
             <button className="btn-primary pill" onClick={onGetStarted}>
               Get started
             </button>
-            <button className="btn-ghost pill" onClick={onGetStarted}>
+            <button
+              className="btn-ghost pill"
+              onClick={() => setShowDemo(true)}
+            >
               See how it works
             </button>
           </div>
@@ -256,6 +262,8 @@ export default function LandingPage({ onGetStarted }) {
           </div>
         </div>
       </footer>
+
+      {showDemo && <DemoTour onClose={() => setShowDemo(false)} />}
     </div>
   );
 }
