@@ -4,6 +4,7 @@ import {
   KanbanIcon,
   TimelineIcon,
   CollabIcon,
+  AnalyticsIcon,
   LogoutIcon,
   MoonIcon,
   SunIcon,
@@ -17,6 +18,7 @@ const NAV_ITEMS = [
   { key: "kanban", label: "Kanban board", icon: <KanbanIcon /> },
   { key: "timeline", label: "Timeline", icon: <TimelineIcon /> },
   { key: "collab", label: "Collaborators", icon: <CollabIcon /> },
+  { key: "analytics", label: "Analytics", icon: <AnalyticsIcon /> },
 ];
 
 export default function Sidebar({ view, setView }) {

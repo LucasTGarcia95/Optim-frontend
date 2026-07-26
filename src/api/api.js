@@ -101,8 +101,7 @@ export const deleteColumn = (columnId, token) =>
     method: "DELETE",
   });
 
-export const getWorkspaces = (token) =>
-  request("/workspaces", { token });
+export const getWorkspaces = (token) => request("/workspaces", { token });
 
 export const getProjects = (workspaceId, token) =>
   request(`/projects?workspace_id=${workspaceId}`, { token });
@@ -145,3 +144,6 @@ export const deleteTaskComment = (commentId, token) =>
 
 export const getTaskActivity = (taskId, token) =>
   request(`/tasks/${taskId}/activity`, { token });
+
+export const getAnalytics = (projectId, token) =>
+  request(`/projects/${projectId}/analytics`, { token });

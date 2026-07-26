@@ -158,3 +158,19 @@ export const SunIcon = ({ size = 16 }) => (
     <path d="M12 1v3M12 20v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M1 12h3M20 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12" />
   </svg>
 );
+
+export const AnalyticsIcon = () => (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <path d="M3 3v18h18" />
+    <rect x="7" y="13" width="3" height="5" />
+    <rect x="12" y="9" width="3" height="9" />
+    <rect x="17" y="5" width="3" height="13" />
+  </svg>
+);

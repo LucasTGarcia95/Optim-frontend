@@ -16,6 +16,7 @@ import {
   createWorkspace,
   deleteProject,
 } from "./api/api.js";
+import Analytics from "./tabs/Analytics.jsx";
 
 const VIEWS = {
   home: Home,
@@ -23,6 +24,7 @@ const VIEWS = {
   timeline: Timeline,
   collab: Collaborators,
   workspace: WorkSpace,
+  analytics: Analytics,
 };
 
 export default function App() {
@@ -207,6 +209,8 @@ export default function App() {
           <Timeline workspaceId={workspaceId} />
         ) : view === "collab" ? (
           <Collaborators workspaceId={workspaceId} />
+        ) : view === "analytics" ? (
+          <Analytics projectId={selectedProjectId} />
         ) : (
           <ActiveView />
         )}
