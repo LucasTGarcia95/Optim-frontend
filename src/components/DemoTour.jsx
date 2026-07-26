@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 const DEMO_MEMBERS = [
-  { id: "avonda", name: "Avonda V.", role: "Tech Lead", color: "#504d63" },
+  { id: "avonda", name: "Avonda F.", role: "Tech Lead", color: "#504d63" },
   { id: "lucas", name: "Lucas G.", role: "Backend", color: "#4a5765" },
   { id: "james", name: "James T.", role: "Frontend", color: "#819aa3" },
   { id: "tyler", name: "Tyler S.", role: "Design", color: "#8fb87a" },
