@@ -5,7 +5,7 @@ import App from "./App.jsx";
 import { AuthProvider } from "./auth/AuthContext.jsx";
 import "./index.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import WorkspaceSettings from "./Components/WorkspaceSettings.jsx";
+import WorkspaceSettings from "./components/WorkspaceSettings.jsx";
 import { ThemeProvider } from "./theme/ThemeContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(

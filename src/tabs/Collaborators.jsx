@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../auth/AuthContext.jsx";
 import { getWorkspace, getMembers } from "../api/api.js";
-import MembersTab from "../Components/MembersTab.jsx";
+import MembersTab from "../components/MembersTab.jsx";
 
 export default function Collaborators({ workspaceId }) {
   const { token } = useAuth();
