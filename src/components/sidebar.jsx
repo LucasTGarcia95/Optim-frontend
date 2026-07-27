@@ -21,13 +21,19 @@ const NAV_ITEMS = [
   { key: "analytics", label: "Analytics", icon: <AnalyticsIcon /> },
 ];
 
-export default function Sidebar({ view, setView }) {
+export default function Sidebar({ view, setView, onViewLanding }) {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
   return (
     <div className="sidebar">
-      <Logo />
+      <button
+        className="sidebar-logo-btn"
+        onClick={onViewLanding}
+        aria-label="View landing page"
+      >
+        <Logo />
+      </button>
       <div className="nav">
         {NAV_ITEMS.map((item) => (
           <NavItem

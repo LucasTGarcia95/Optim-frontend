@@ -137,7 +137,7 @@ const FOOTER_COLUMNS = [
   },
 ];
 
-export default function LandingPage({ onGetStarted }) {
+export default function LandingPage({ onGetStarted, loggedIn = false }) {
   const [activeTab, setActiveTab] = useState(SHOWCASE_TABS[0].key);
   const [showDemo, setShowDemo] = useState(false);
   const activeShowcase = SHOWCASE_TABS.find((tab) => tab.key === activeTab);
@@ -155,12 +155,20 @@ export default function LandingPage({ onGetStarted }) {
             ))}
           </div>
           <div className="landing-nav-actions">
-            <button className="btn-ghost pill" onClick={onGetStarted}>
-              Log in
-            </button>
-            <button className="btn-primary pill" onClick={onGetStarted}>
-              Get started
-            </button>
+            {loggedIn ? (
+              <button className="btn-primary pill" onClick={onGetStarted}>
+                Go to app
+              </button>
+            ) : (
+              <>
+                <button className="btn-ghost pill" onClick={onGetStarted}>
+                  Log in
+                </button>
+                <button className="btn-primary pill" onClick={onGetStarted}>
+                  Get started
+                </button>
+              </>
+            )}
           </div>
         </nav>
 

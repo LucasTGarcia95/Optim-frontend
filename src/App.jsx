@@ -33,6 +33,7 @@ export default function App() {
   const [modalOpen, setModalOpen] = useState(false);
   const { user, token } = useAuth();
   const [screen, setScreen] = useState("landing");
+  const [showLanding, setShowLanding] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [workspaceId, setWorkspaceId] = useState(null);
   const [loadingBoards, setLoadingBoards] = useState(true);
@@ -91,6 +92,10 @@ export default function App() {
     ) : (
       <LandingPage onGetStarted={() => setScreen("login")} />
     );
+  }
+
+  if (showLanding) {
+    return <LandingPage onGetStarted={() => setShowLanding(false)} loggedIn />;
   }
 
   const handleCreateBoard = async ({ name, status, startDate, endDate }) => {
@@ -156,7 +161,11 @@ export default function App() {
 
   return (
     <div className="app">
-      <Sidebar view={view} setView={setView} />
+      <Sidebar
+        view={view}
+        setView={setView}
+        onViewLanding={() => setShowLanding(true)}
+      />
       <div className="main">
         {view === "home" ? (
           loadingBoards ? (
